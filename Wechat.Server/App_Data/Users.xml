@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <!--绑定OpenID和工号
+  状态1、2、3，待使用-->
+  <Users>
+    <User>
+      <Openid id="0" dataType="sample">null</Openid>
+      <Pernr>null</Pernr>
+      <BindingTime>null</BindingTime>
+      <Status>null</Status>
+    </User>
+  </Users>
+</root>
