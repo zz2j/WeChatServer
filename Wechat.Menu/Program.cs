@@ -41,7 +41,8 @@ namespace Wechat.Menu
             string menu1 = "立即预约";
             string menu2 = "我";
             string menu2_1 = "我的预约";
-            string menu2_2 = "车辆管理";
+            string menu2_2 = "我的车辆";
+            string menu2_3 = "我要绑定";
             string menu3 = "使用帮助";
 
             var accessToken = AccessTokenContainer.TryGetToken(appId, appSecret);
@@ -63,6 +64,11 @@ namespace Wechat.Menu
             {
                 name = menu2_2,
                 url = menu2_2_url
+            });
+            meButton.sub_button.Add(new SingleClickButton()
+            {
+                name = menu2_3,
+                key = "Bind"
             });
  
             var helpButton = new SingleClickButton()

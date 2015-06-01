@@ -92,12 +92,17 @@ namespace Wechat.Server.Wx.Handler
                 return responseMessage;
             }
 
-            if(requestMessage.Content=="BookClick"|| requestMessage.Content=="MyBooking"||
+            if(requestMessage.Content=="Bind"|| requestMessage.Content=="MyBooking"||
                 requestMessage.Content =="VehicleManager"){
-                    if (!isBound) {
+                    if (!isBound)
+                    {
                         responseMessage.Content = GetBindUserInfo();
                         return responseMessage;
-                    }                
+                    }
+                    else {
+                        responseMessage.Content = "您已经进行了账号绑定";
+                        return responseMessage;
+                    }
             }
             return null;
         }
@@ -132,13 +137,13 @@ namespace Wechat.Server.Wx.Handler
                     }
                     else if (exType.Name == "OverflowException")
                     {
-                        responseMessage.Content = @"您输入的工号太大了！\r\n更多信息请阅读【使用指南】";
+                        responseMessage.Content = "您输入的工号太大了！\r\n更多信息请阅读【使用指南】";
                     }
                     return responseMessage;
                 }
                 if (Uid.ToString().Length != 5 || (Uid.ToString().Substring(0,1)!="6" && Uid.ToString().Substring(0,1) != "2"))
                 {
-                    responseMessage.Content = @"您输入的工号不正确！\r\n更多信息请阅读【使用指南】";
+                    responseMessage.Content = "您输入的工号不正确！\r\n更多信息请阅读【使用指南】";
                     return responseMessage;
                 }
                 else 
@@ -161,7 +166,7 @@ namespace Wechat.Server.Wx.Handler
                         responseMessage.Content = error;
                         return responseMessage;
                     }
-                    responseMessage.Content = @"绑定成功！";
+                    responseMessage.Content = "绑定成功！";
                     return responseMessage;
                 }
             }
@@ -178,10 +183,10 @@ namespace Wechat.Server.Wx.Handler
                 responseMessage = enhancedResponseMessage;
                 enhancedResponseMessage.Articles.Add(new Article()
                 {
-                    Title = "卡斯柯微信平台-车辆预约",
-                    Description = "使用指南",
-                    PicUrl = "http://weixin.senparc.com/Images/qrcode.jpg",
-                    Url = "http://weixin.senparc.com"
+                    Title = "使用指南",
+                    Description = "如需帮助，请联系信息管理部相关负责人",
+                    PicUrl = "http://www.jhmmxxzx.com/upload/image/20140716/20140716162584538453.jpg",
+                    Url = "http://www.casco.com.cn"
                 });
                 return responseMessage;
             }
@@ -204,10 +209,12 @@ namespace Wechat.Server.Wx.Handler
         private string GetBindUserInfo()
         {
             return string.Format(
-                @"欢迎使用卡斯柯移动车辆预定服务！\r\n
+                @"欢迎使用卡斯柯移动车辆预定服务！
 目前您还未对此微信号进行绑定，无法使用预约服务，
-请输入工号，例如：61322，发送此消息进行绑定。更多信息请点击
-菜单【使用指南】。"
+请输入工号，例如：61322，发送此消息进行绑定。
+更多信息请点击菜单【使用指南】。
+
+"
                 );
         }
         /// <summary>
