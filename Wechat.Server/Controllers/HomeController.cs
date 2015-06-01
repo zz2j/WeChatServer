@@ -14,6 +14,7 @@ using Senparc.Weixin.MP.Helpers;
 using Senparc.Weixin.MP.MvcExtension;
 using System.IO;
 using Wechat.Server.Wx.Handler;
+using System.Diagnostics;
 namespace Wechat.Server.Controllers
 {
     public class HomeController : Controller
@@ -45,9 +46,10 @@ namespace Wechat.Server.Controllers
         {
             if (!CheckSignature.Check(postModel.Signature, postModel.Timestamp, postModel.Nonce, token))
             {
+                Trace.TraceError("参数错误");
                 return Content("参数错误");
             }
-
+            Trace.TraceInformation("Post验证成功，进入微信处理过程");
             postModel.Token = token;
             postModel.EncodingAESKey = encodingAesKey;
             postModel.AppId = appId;

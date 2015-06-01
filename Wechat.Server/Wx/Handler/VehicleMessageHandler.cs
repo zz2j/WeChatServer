@@ -16,6 +16,7 @@ using System.Text;
 
 using Wechat.Server.Utility;
 using System.Xml.Linq;
+using System.Diagnostics;
 
 namespace Wechat.Server.Wx.Handler
 {
@@ -78,6 +79,7 @@ namespace Wechat.Server.Wx.Handler
         /// <returns></returns>
         public override IResponseMessageBase OnTextOrEventRequest(RequestMessageText requestMessage)
         {
+            Trace.TraceInformation("进入text or event 预处理");
             bool isBound = CheckBound(requestMessage);
 
             if(requestMessage.Content=="BookClick"|| requestMessage.Content=="MyBooking"||
