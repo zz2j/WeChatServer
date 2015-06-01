@@ -80,12 +80,21 @@ namespace Wechat.Server.Wx.Handler
         public override IResponseMessageBase OnTextOrEventRequest(RequestMessageText requestMessage)
         {
             Trace.TraceInformation("进入text or event 预处理");
-            bool isBound = CheckBound(requestMessage);
+            var responseMessage = CreateResponseMessage<ResponseMessageText>();
+            bool isBound = false;
+            try
+            {
+                isBound = CheckBound(requestMessage);
+            }
+            catch (Exception ex)
+            {
+                responseMessage.Content = "error: " + ex.Message;
+                return responseMessage;
+            }
 
             if(requestMessage.Content=="BookClick"|| requestMessage.Content=="MyBooking"||
                 requestMessage.Content =="VehicleManager"){
                     if (!isBound) {
-                        var responseMessage = CreateResponseMessage<ResponseMessageText>();
                         responseMessage.Content = GetBindUserInfo();
                         return responseMessage;
                     }                
@@ -210,10 +219,17 @@ namespace Wechat.Server.Wx.Handler
         {
             bool isBound;
             string fromUser = requestMessage.FromUserName;
-            XElement root = XElement.Load(userInfoPath);
-            var User = root.Element("Users").Elements("User")
-                .Where(s => s.Element("Openid").Value.ToString() == fromUser)
-                .SingleOrDefault();
+            XElement User = null;
+            try
+            {
+                XElement root = XElement.Load(userInfoPath);
+                User = root.Element("Users").Elements("User")
+                    .Where(s => s.Element("Openid").Value.ToString() == fromUser)
+                    .SingleOrDefault();
+            }
+            catch(Exception ex){
+                
+            }
             isBound = User == null ? false : true;
             return isBound;
         }
