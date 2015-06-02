@@ -22,14 +22,14 @@ namespace Wechat.Menu
 #else
             string appId = "wx4df221a4e9845aea";
             string appSecret = "c2c6e3220de9609c79e3d1f425bba0fb";
-            string appWebUrl = "host_domain_name";
+            string appWebUrl = "http://wechatweb.apphb.com/";
 #endif
-            bool test = true;
+            bool test = false;
             string test_host = "http://www.casco.com.cn";
 
             string menu1_url = appWebUrl;
-            string menu2_1_url = appWebUrl + "MyCar";
-            string menu2_2_url = appWebUrl + "VehicleManage";
+            string menu2_1_url = appWebUrl + "/MyCar";
+            string menu2_2_url = appWebUrl + "/VehicleManage";
 
             if (test)
             {
