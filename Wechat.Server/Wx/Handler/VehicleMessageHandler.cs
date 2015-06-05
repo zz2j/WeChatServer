@@ -45,7 +45,7 @@ namespace Wechat.Server.Wx.Handler
         {
             WeixinContext.ExpireMinutes = 3;
             bindToken = string.IsNullOrEmpty(bindToken) ? "casco.zz2j" : bindToken;
-            webUrl = string.IsNullOrEmpty(webUrl) ? "wechatweb.apphb.com" : webUrl;
+            webUrl = string.IsNullOrEmpty(webUrl) ? "http://wechatweb.apphb.com" : webUrl;
         }
 
         public override void OnExecuting()
@@ -159,14 +159,11 @@ namespace Wechat.Server.Wx.Handler
                 {
                     enText.AppendFormat("{0:x2}", b);
                 }
-                //enhancedResponseMessage.Content = requestMessage.FromUserName + "\r\n" + enText.ToString();
-                //return enhancedResponseMessage;
-                string loginUrl = string.Format("{0}/Login?openid={1}&signature={2}&timestamp={3}&nonce={4}",
-                    "wechatweb.apphb.com", requestMessage.FromUserName, enText.ToString(), timestamp.ToString(), nonce);
-                enhancedResponseMessage.Content = loginUrl.UrlEncode();
-                return enhancedResponseMessage;
 
-                string text = string.Format("欢迎使用卡斯柯微信服务号，绑定账号请访问下面的地址：\r\n{0}",loginUrl);
+                string loginUrl = string.Format("{0}/Login?openid={1}&signature={2}&timestamp={3}&nonce={4}",
+                    webUrl, requestMessage.FromUserName, enText.ToString(), timestamp.ToString(), nonce);
+
+                string text = string.Format("欢迎使用卡斯柯微信服务号，绑定账号请访问下面的地址：\r\n{0}",loginUrl.UrlEncode());
                 enhancedResponseMessage.Content = text;
                 return enhancedResponseMessage;
             }
