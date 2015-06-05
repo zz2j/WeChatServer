@@ -163,7 +163,7 @@ namespace Wechat.Server.Wx.Handler
                 string loginUrl = string.Format("{0}/Login?openid={1}&signature={2}&timestamp={3}&nonce={4}",
                     webUrl, requestMessage.FromUserName, enText.ToString(), timestamp.ToString(), nonce);
 
-                string text = string.Format("欢迎使用卡斯柯微信服务号，绑定账号请访问下面的地址：\r\n\r\n <a href=\"{0}\">点击这里</a>",loginUrl.UrlEncode());
+                string text = string.Format("欢迎使用卡斯柯微信服务号，绑定账号请访问下面的地址：\r\n\r\n <a href=\"{0}\">点击这里</a>",@"http://casco.com.cn");
                 enhancedResponseMessage.Content = text + "\r\n" +loginUrl.UrlEncode();
                 return enhancedResponseMessage;
             }
