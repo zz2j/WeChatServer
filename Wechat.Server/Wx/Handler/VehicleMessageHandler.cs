@@ -132,8 +132,8 @@ namespace Wechat.Server.Wx.Handler
             if (requestMessage.EventKey == "Bind")
             {
                 var enhancedResponseMessage = CreateResponseMessage<ResponseMessageText>();
-                //enhancedResponseMessage.Content = "测试";
-                //return enhancedResponseMessage;
+                enhancedResponseMessage.Content = "www.baidu.com";
+                return enhancedResponseMessage;
 
                 StringBuilder sb = new StringBuilder();
                 Random rd = new Random();
