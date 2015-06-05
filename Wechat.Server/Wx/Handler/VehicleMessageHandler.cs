@@ -132,8 +132,8 @@ namespace Wechat.Server.Wx.Handler
             if (requestMessage.EventKey == "Bind")
             {
                 var enhancedResponseMessage = CreateResponseMessage<ResponseMessageText>();
-                enhancedResponseMessage.Content = "测试";
-                return enhancedResponseMessage;
+                //enhancedResponseMessage.Content = "测试";
+                //return enhancedResponseMessage;
 
                 StringBuilder sb = new StringBuilder();
                 Random rd = new Random();
@@ -160,7 +160,7 @@ namespace Wechat.Server.Wx.Handler
                 }
 
                 string loginUrl = string.Format("{0}/Login?openid={1}&signature={2}&timestamp={3}&nonce={4}",
-                    webUrl,requestMessage.FromUserName,enText.ToString(),timestamp.ToString(),nonce);
+                    "wechatweb.apphb.com", requestMessage.FromUserName, enText.ToString(), timestamp.ToString(), nonce);
                 string text = string.Format("欢迎使用卡斯柯微信服务号，绑定账号请访问下面的地址：\r\n{0}",loginUrl);
                 enhancedResponseMessage.Content = text;
                 return enhancedResponseMessage;
