@@ -9,6 +9,7 @@ using Senparc.Weixin.MP.Entities;
 using Senparc.Weixin.MP.MessageHandlers;
 using Senparc.Weixin.MP.Entities.Request;
 using Senparc.Weixin.MP.Helpers;
+using Senparc.Weixin.HttpUtility;
 using System.Web.Configuration;
 using System.IO;
 using Senparc.Weixin.MP.Agent;
@@ -132,8 +133,8 @@ namespace Wechat.Server.Wx.Handler
             if (requestMessage.EventKey == "Bind")
             {
                 var enhancedResponseMessage = CreateResponseMessage<ResponseMessageText>();
-                enhancedResponseMessage.Content = "www.baidu.com";
-                return enhancedResponseMessage;
+                //enhancedResponseMessage.Content = "www.baidu.com";
+                //return enhancedResponseMessage;
 
                 StringBuilder sb = new StringBuilder();
                 Random rd = new Random();
@@ -162,7 +163,7 @@ namespace Wechat.Server.Wx.Handler
                 //return enhancedResponseMessage;
                 string loginUrl = string.Format("{0}/Login?openid={1}&signature={2}&timestamp={3}&nonce={4}",
                     "wechatweb.apphb.com", requestMessage.FromUserName, enText.ToString(), timestamp.ToString(), nonce);
-                enhancedResponseMessage.Content = bindToken + "\r\n" + loginUrl;
+                enhancedResponseMessage.Content = loginUrl.UrlEncode();
                 return enhancedResponseMessage;
 
                 string text = string.Format("欢迎使用卡斯柯微信服务号，绑定账号请访问下面的地址：\r\n{0}",loginUrl);
