@@ -43,8 +43,8 @@ namespace Wechat.Server.Wx.Handler
             : base(inputStream, postModel, maxRecordCount)
         {
             WeixinContext.ExpireMinutes = 3;
-            bindToken = bindToken == string.Empty ? "casco.zz2j" : bindToken;
-            webUrl = webUrl == string.Empty ? "wechatweb.apphb.com" : webUrl;
+            bindToken = string.IsNullOrEmpty(bindToken) ? "casco.zz2j" : bindToken;
+            webUrl = string.IsNullOrEmpty(webUrl) ? "wechatweb.apphb.com" : webUrl;
         }
 
         public override void OnExecuting()
@@ -74,7 +74,8 @@ namespace Wechat.Server.Wx.Handler
             var responseMessage = CreateResponseMessage<ResponseMessageText>();
             string text = "欢迎关注卡斯柯微信服务号！";
             responseMessage.Content = text;
-            return base.OnEvent_SubscribeRequest(requestMessage);
+            return responseMessage;
+            //return base.OnEvent_SubscribeRequest(requestMessage);
         }
         /// <summary>
         /// Default Message
@@ -158,9 +159,7 @@ namespace Wechat.Server.Wx.Handler
 
                 string loginUrl = string.Format("{0}/Login?openid={1}&signature={2}&timestamp={3}&nonce={4}",
                     webUrl,requestMessage.FromUserName,enText.ToString(),timestamp.ToString(),nonce);
-                string text = string.Format(
-                    @"欢迎使用卡斯柯微信服务号，绑定账号请访问下面的地址：
-                        {0}",loginUrl);
+                string text = string.Format("欢迎使用卡斯柯微信服务号，绑定账号请访问下面的地址：\r\n{0}",loginUrl);
                 enhancedResponseMessage.Content = text;
                 return enhancedResponseMessage;
             }
