@@ -56,6 +56,7 @@ namespace Wechat.Menu
             userButton.sub_button.Add(new SingleClickButton()
             {
                 name = titles[4],
+                type = ButtonType.click.ToString(),
                 key = "Bind"
             });
  
