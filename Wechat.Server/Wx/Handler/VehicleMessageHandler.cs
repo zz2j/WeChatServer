@@ -35,12 +35,16 @@ namespace Wechat.Server.Wx.Handler
 
         private string appId = WebConfigurationManager.AppSettings["WeixinAppId"];
         private string appSecret = WebConfigurationManager.AppSettings["WeixinAppSecret"];
+        private string bindToken = WebConfigurationManager.AppSettings["WeixinAppBindToken"];
+        private string webUrl = WebConfigurationManager.AppSettings["WeixinAppWebUrl"];
         private string userInfoPath = Utility.Server.GetMapPath("~/App_Data/UserInfo.xml");
 
         public VehicleMessageHandler(Stream inputStream, PostModel postModel, int maxRecordCount = 0)
             : base(inputStream, postModel, maxRecordCount)
         {
             WeixinContext.ExpireMinutes = 3;
+            bindToken = bindToken == string.Empty ? "casco.zz2j" : bindToken;
+            webUrl = webUrl == string.Empty ? "wechatweb.apphb.com" : webUrl;
         }
 
         public override void OnExecuting()
@@ -60,118 +64,52 @@ namespace Wechat.Server.Wx.Handler
 
 
         #region message handler
+       /// <summary>
+       /// Subscribe
+       /// </summary>
+       /// <param name="requestMessage"></param>
+       /// <returns></returns>
+        public override IResponseMessageBase OnEvent_SubscribeRequest(RequestMessageEvent_Subscribe requestMessage)
+        {
+            var responseMessage = CreateResponseMessage<ResponseMessageText>();
+            string text = "欢迎关注卡斯柯微信服务号！";
+            responseMessage.Content = text;
+            return base.OnEvent_SubscribeRequest(requestMessage);
+        }
         /// <summary>
-        /// 默认消息
+        /// Default Message
         /// </summary>
         /// <param name="requestMessage"></param>
         /// <returns></returns>
         public override IResponseMessageBase DefaultResponseMessage(IRequestMessageBase requestMessage)
         {
             var responseMessage = CreateResponseMessage<ResponseMessageText>();
-            string errorInfo = @"该消息未被识别，如需帮助，请查看使用指南！";
+            string errorInfo = @"该消息未被识别，如需帮助，请查看使用指南或者联系信息管理部相关人员！";
             responseMessage.Content = errorInfo;
             return responseMessage;
         }
         /// <summary>
-        /// 预处理
+        /// Pre-process
         /// </summary>
         /// <param name="requestMessage"></param>
         /// <returns></returns>
         public override IResponseMessageBase OnTextOrEventRequest(RequestMessageText requestMessage)
         {
-            Trace.TraceInformation("进入text or event 预处理");
-            var responseMessage = CreateResponseMessage<ResponseMessageText>();
-            bool isBound = false;
-            try
-            {
-                isBound = CheckBound(requestMessage);
-            }
-            catch (Exception ex)
-            {
-                responseMessage.Content = "error: " + ex.Message;
-                return responseMessage;
-            }
-
-            if(requestMessage.Content=="Bind"|| requestMessage.Content=="MyBooking"||
-                requestMessage.Content =="VehicleManager"){
-                    if (!isBound)
-                    {
-                        responseMessage.Content = GetBindUserInfo();
-                        return responseMessage;
-                    }
-                    else {
-                        responseMessage.Content = "您已经进行了账号绑定";
-                        return responseMessage;
-                    }
-            }
             return null;
         }
 
         /// <summary>
-        /// 文本信息
+        /// Text message
         /// </summary>
         /// <param name="requestMessage"></param>
         /// <returns></returns>
         public override IResponseMessageBase OnTextRequest(RequestMessageText requestMessage)
         {
-             //调用远程Webservice，校验工号和密码
-             //问题1，响应时间>5秒，微信服务器不响应了
-             //问题2，校验方式，安全问题
-             //这里跳过校验，只实现简单的6/2打头的5位数字校验，后续待实现
             var responseMessage = CreateResponseMessage<ResponseMessageText>();
-            bool isBound = CheckBound(requestMessage);
-            if (isBound) return responseMessage;
-            else
-            {
-                int Uid;
-                try
-                {
-                    Uid = Convert.ToInt32(requestMessage.Content);
-                }
-                catch (Exception ex)
-                {
-                    var exType = ex.GetType();
-                    if (exType.Name == "FormatException")
-                    {
-                        responseMessage.Content = GetBindUserInfo();
-                    }
-                    else if (exType.Name == "OverflowException")
-                    {
-                        responseMessage.Content = "您输入的工号太大了！\r\n更多信息请阅读【使用指南】";
-                    }
-                    return responseMessage;
-                }
-                if (Uid.ToString().Length != 5 || (Uid.ToString().Substring(0,1)!="6" && Uid.ToString().Substring(0,1) != "2"))
-                {
-                    responseMessage.Content = "您输入的工号不正确！\r\n更多信息请阅读【使用指南】";
-                    return responseMessage;
-                }
-                else 
-                { 
-                    try{
-                    XElement root = XElement.Load(userInfoPath);
-                    root.Element("Users").Add(
-                        new XElement("User",
-                            new XElement("Openid",requestMessage.FromUserName),
-                            new XElement("Pernr",Uid.ToString()),
-                            new XElement("BindingTime",DateTime.Now.ToShortDateString()),
-                            new XElement("Status","OK")
-                            )
-                        );
-                    root.Save(userInfoPath);
-                    }catch(Exception ex){
-                        //Log for debug
-                        string error;
-                        error = string.Format("xml错误: {0}",ex.Message);
-                        responseMessage.Content = error;
-                        return responseMessage;
-                    }
-                    responseMessage.Content = "绑定成功！";
-                    return responseMessage;
-                }
-            }
+            responseMessage.Content = "呵呵";
+            return responseMessage;
         }
-
+        //click event:Help/Bind
         public override IResponseMessageBase OnEvent_ClickRequest(RequestMessageEvent_Click requestMessage)
         {
             IResponseMessageBase responseMessage = null;
@@ -190,6 +128,42 @@ namespace Wechat.Server.Wx.Handler
                 });
                 return responseMessage;
             }
+            if (requestMessage.EventKey == "Bind")
+            {
+                var enhancedResponseMessage = CreateResponseMessage<ResponseMessageText>();
+                
+                StringBuilder sb = new StringBuilder();
+                Random rd = new Random();
+                string nonce = string.Empty;
+                for (int i = 0; i < 8; i++)
+                {
+                    int r = rd.Next(122);
+                    char c = (char)r;
+                    sb.Append(c);
+                }
+                nonce = sb.ToString();
+
+                DateTime ancient = new DateTime(1970, 1, 1);
+                long timestamp = (DateTime.UtcNow.Ticks - ancient.Ticks) / 10000000;
+
+                var arr = new[] { bindToken, timestamp.ToString(), nonce }.OrderBy(z => z).ToArray();
+                var arrString = string.Join("", arr);
+                var sha1 = System.Security.Cryptography.SHA1.Create();
+                var sha1Arr = sha1.ComputeHash(Encoding.UTF8.GetBytes(arrString));
+                StringBuilder enText = new StringBuilder();
+                foreach (var b in sha1Arr)
+                {
+                    enText.AppendFormat("{0:x2}", b);
+                }
+
+                string loginUrl = string.Format("{0}/Login?openid={1}&signature={2}&timestamp={3}&nonce={4}",
+                    webUrl,requestMessage.FromUserName,enText.ToString(),timestamp.ToString(),nonce);
+                string text = string.Format(
+                    @"欢迎使用卡斯柯微信服务号，绑定账号请访问下面的地址：
+                        {0}",loginUrl);
+                enhancedResponseMessage.Content = text;
+                return enhancedResponseMessage;
+            }
             return base.OnEvent_ClickRequest(requestMessage);
         }
         
@@ -203,7 +177,7 @@ namespace Wechat.Server.Wx.Handler
 
         #region private method
         /// <summary>
-        /// 提醒
+        ///Bind information
         /// </summary>
         /// <returns></returns>
         private string GetBindUserInfo()
@@ -218,7 +192,7 @@ namespace Wechat.Server.Wx.Handler
                 );
         }
         /// <summary>
-        /// 判断绑定
+        /// Check Bound
         /// </summary>
         /// <param name="requestMessage"></param>
         /// <returns></returns>
@@ -241,7 +215,7 @@ namespace Wechat.Server.Wx.Handler
             return isBound;
         }
         /// <summary>
-        /// 周
+        /// Week
         /// </summary>
         /// <returns></returns>
         private static string GetWeekDay()
