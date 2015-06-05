@@ -97,6 +97,8 @@ namespace Wechat.Menu
             string loginUrl = string.Format("{0}/Login?openid={1}&signature={2}&timestamp={3}&nonce={4}",
                     "wechatweb.apphb.com", "hi", enText.ToString(), timestamp.ToString(), nonce);
             Console.WriteLine(loginUrl);
+            string text = string.Format("欢迎使用卡斯柯微信服务号，绑定账号请访问下面的地址：\n<a href=\"{0}\">点击这里</a>", loginUrl.UrlEncode());
+            Console.WriteLine(text);
             Console.ReadKey();
         }
     }
