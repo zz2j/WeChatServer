@@ -146,6 +146,8 @@ namespace Wechat.Server.Wx.Handler
                     sb.Append(c);
                 }
                 nonce = sb.ToString();
+                //test nonce
+                nonce = "nonce";
 
                 DateTime ancient = new DateTime(1970, 1, 1);
                 long timestamp = (DateTime.UtcNow.Ticks - ancient.Ticks) / 10000000;
@@ -164,7 +166,7 @@ namespace Wechat.Server.Wx.Handler
                     webUrl, requestMessage.FromUserName, enText.ToString(), timestamp.ToString(), nonce);
 
                 string text = string.Format(@"欢迎使用卡斯柯微信服务号，绑定账号请访问下面的地址：
-                                        <a href=""http://www.baidu.com/?q=zhuangzhong"">点击这里</a>");
+                                        <a href=""http://www.baidu.com/?q=zhuangzhong&"">点击这里</a>");
                 enhancedResponseMessage.Content = text + "\r\n" + loginUrl;
                 return enhancedResponseMessage;
             }
