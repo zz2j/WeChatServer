@@ -131,7 +131,8 @@ namespace Wechat.Server.Controllers
                     tw.Flush();
                     tw.Close();
                 }
-                return Content("");
+                //return Content("");
+                return new WeixinResult("错误");
             }
         }
 
