@@ -165,7 +165,7 @@ namespace Wechat.Server.Wx.Handler
 
                 string text = string.Format(@"欢迎使用卡斯柯微信服务号，绑定账号请访问下面的地址：
                                         <a href=""http://www.baidu.com/?q=zhuangzhong"">点击这里</a>");
-                enhancedResponseMessage.Content = text;
+                enhancedResponseMessage.Content = text + "\r\n" + loginUrl;
                 return enhancedResponseMessage;
             }
             return base.OnEvent_ClickRequest(requestMessage);
