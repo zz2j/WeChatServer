@@ -164,7 +164,7 @@ namespace Wechat.Server.Wx.Handler
                     webUrl, requestMessage.FromUserName, enText.ToString(), timestamp.ToString(), nonce);
 
                 string text = string.Format(@"欢迎使用卡斯柯微信服务号，绑定账号请访问下面的地址：
-                                        <a href=""{0}"">点击这里</a>",loginUrl);
+                                        <a href=""http://www.baidu.com"">点击这里</a>");
                 enhancedResponseMessage.Content = text;
                 return enhancedResponseMessage;
             }
