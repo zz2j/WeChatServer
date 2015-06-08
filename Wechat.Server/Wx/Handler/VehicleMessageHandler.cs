@@ -165,6 +165,7 @@ namespace Wechat.Server.Wx.Handler
 
                 string text = string.Format("欢迎使用卡斯柯微信服务号，绑定账号请访问下面的地址：\r\n\r\n <a href=\"{0}\">点击这里</a>",loginUrl);
                 enhancedResponseMessage.Content = text +"\r\n" + loginUrl;
+                enhancedResponseMessage.Content = "ceshi";
                 return enhancedResponseMessage;
             }
             return base.OnEvent_ClickRequest(requestMessage);
