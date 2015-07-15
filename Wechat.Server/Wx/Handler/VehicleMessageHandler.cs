@@ -78,45 +78,14 @@ namespace Wechat.Server.Wx.Handler
             return responseMessage;
             //return base.OnEvent_SubscribeRequest(requestMessage);
         }
-        /// <summary>
-        /// Default Message
-        /// </summary>
-        /// <param name="requestMessage"></param>
-        /// <returns></returns>
-        public override IResponseMessageBase DefaultResponseMessage(IRequestMessageBase requestMessage)
-        {
-            var responseMessage = CreateResponseMessage<ResponseMessageText>();
-            string errorInfo = @"该消息未被识别，如需帮助，请查看使用指南或者联系信息管理部相关人员！";
-            responseMessage.Content = errorInfo;
-            return responseMessage;
-        }
-        /// <summary>
-        /// Pre-process
-        /// </summary>
-        /// <param name="requestMessage"></param>
-        /// <returns></returns>
-        public override IResponseMessageBase OnTextOrEventRequest(RequestMessageText requestMessage)
-        {
-            return null;
-        }
 
-        /// <summary>
-        /// Text message
-        /// </summary>
-        /// <param name="requestMessage"></param>
-        /// <returns></returns>
-        public override IResponseMessageBase OnTextRequest(RequestMessageText requestMessage)
-        {
-            var responseMessage = CreateResponseMessage<ResponseMessageText>();
-            responseMessage.Content = "呵呵";
-            return responseMessage;
-        }
-        //click event:Help/Bind
+
+        //click event
         public override IResponseMessageBase OnEvent_ClickRequest(RequestMessageEvent_Click requestMessage)
         {
             IResponseMessageBase responseMessage = null;
             
-            if(requestMessage.EventKey == "Help")
+            if(requestMessage.EventKey == "UserInfo")
             {
                 //todo
                 var enhancedResponseMessage = CreateResponseMessage<ResponseMessageNews>();
@@ -130,11 +99,9 @@ namespace Wechat.Server.Wx.Handler
                 });
                 return responseMessage;
             }
-            if (requestMessage.EventKey == "Bind")
+            if (requestMessage.EventKey == "UserBind")
             {
                 var enhancedResponseMessage = CreateResponseMessage<ResponseMessageText>();
-                //enhancedResponseMessage.Content = "www.baidu.com";
-                //return enhancedResponseMessage;
 
                 StringBuilder sb = new StringBuilder();
                 Random rd = new Random();
@@ -178,82 +145,17 @@ namespace Wechat.Server.Wx.Handler
             responseMessage.Content = "Web page: " + requestMessage.EventKey;
             return responseMessage;
         }
-        #endregion
-
-        #region private method
-        /// <summary>
-        ///Bind information
-        /// </summary>
-        /// <returns></returns>
-        private string GetBindUserInfo()
+        #endregion  
+    /// <summary>
+    /// 必须实现
+    /// </summary>
+    /// <param name="requestMessage"></param>
+    /// <returns></returns>
+        public override IResponseMessageBase DefaultResponseMessage(IRequestMessageBase requestMessage)
         {
-            return string.Format(
-                @"欢迎使用卡斯柯移动车辆预定服务！
-目前您还未对此微信号进行绑定，无法使用预约服务，
-请输入工号，例如：61322，发送此消息进行绑定。
-更多信息请点击菜单【使用指南】。
-
-"
-                );
+            var responseMessage = CreateResponseMessage<ResponseMessageText>();
+            responseMessage.Content = "未识别消息";
+            return responseMessage;
         }
-        /// <summary>
-        /// Check Bound
-        /// </summary>
-        /// <param name="requestMessage"></param>
-        /// <returns></returns>
-        private bool CheckBound(RequestMessageText requestMessage)
-        {
-            bool isBound;
-            string fromUser = requestMessage.FromUserName;
-            XElement User = null;
-            try
-            {
-                XElement root = XElement.Load(userInfoPath);
-                User = root.Element("Users").Elements("User")
-                    .Where(s => s.Element("Openid").Value.ToString() == fromUser)
-                    .SingleOrDefault();
-            }
-            catch(Exception ex){
-                
-            }
-            isBound = User == null ? false : true;
-            return isBound;
-        }
-        /// <summary>
-        /// Week
-        /// </summary>
-        /// <returns></returns>
-        private static string GetWeekDay()
-        {
-            string day = string.Empty;
-            switch (DateTime.Now.DayOfWeek)
-            {
-                case DayOfWeek.Friday:
-                    day = "星期五";
-                    break;
-                case DayOfWeek.Monday:
-                    day = "星期一";
-                    break;
-                case DayOfWeek.Saturday:
-                    day = "星期六";
-                    break;
-                case DayOfWeek.Sunday:
-                    day = "星期天";
-                    break;
-                case DayOfWeek.Thursday:
-                    day = "星期四";
-                    break;
-                case DayOfWeek.Tuesday:
-                    day = "星期五";
-                    break;
-                case DayOfWeek.Wednesday:
-                    day = "星期二";
-                    break;
-                default:
-                    break;
-            }
-            return day;
-        }
-        #endregion
     }
 }
