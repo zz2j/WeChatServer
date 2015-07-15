@@ -45,7 +45,7 @@ namespace Wechat.Server.Wx.Handler
         {
             WeixinContext.ExpireMinutes = 3;
             bindToken = string.IsNullOrEmpty(bindToken) ? "casco.zz2j" : bindToken;
-            webUrl = string.IsNullOrEmpty(webUrl) ? "http://wechatweb.apphb.com" : webUrl;
+            webUrl = string.IsNullOrEmpty(webUrl) ? "http://cascomp.apphb.com" : webUrl;
         }
 
         public override void OnExecuting()
