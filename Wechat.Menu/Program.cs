@@ -24,7 +24,7 @@ namespace Wechat.Menu
 #else
             string appId = "wx4df221a4e9845aea";
             string appSecret = "c2c6e3220de9609c79e3d1f425bba0fb";
-            string appHost = "http://cascomp.apphb.com";
+            string appHost = "http://recruit.casco.com.cn";
             
 #endif
             

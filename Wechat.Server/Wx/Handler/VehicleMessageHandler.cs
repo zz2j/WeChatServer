@@ -45,7 +45,7 @@ namespace Wechat.Server.Wx.Handler
         {
             WeixinContext.ExpireMinutes = 3;
             bindToken = string.IsNullOrEmpty(bindToken) ? "casco.zz2j" : bindToken;
-            webUrl = string.IsNullOrEmpty(webUrl) ? "http://cascomp.apphb.com" : webUrl;
+            webUrl = string.IsNullOrEmpty(webUrl) ? "http://recruit.casco.com.cn" : webUrl;
         }
 
         public override void OnExecuting()
@@ -66,21 +66,20 @@ namespace Wechat.Server.Wx.Handler
 
         #region message handler
        /// <summary>
-       /// Subscribe
+       /// 订阅
        /// </summary>
        /// <param name="requestMessage"></param>
        /// <returns></returns>
         public override IResponseMessageBase OnEvent_SubscribeRequest(RequestMessageEvent_Subscribe requestMessage)
         {
             var responseMessage = CreateResponseMessage<ResponseMessageText>();
-            string text = "欢迎关注卡斯柯微信服务号！";
+            string text = "欢迎关注卡斯柯信号有限公司北京分公司微信服务号！";
             responseMessage.Content = text;
             return responseMessage;
-            //return base.OnEvent_SubscribeRequest(requestMessage);
         }
 
 
-        //click event
+        //点击
         public override IResponseMessageBase OnEvent_ClickRequest(RequestMessageEvent_Click requestMessage)
         {
             IResponseMessageBase responseMessage = null;
@@ -147,14 +146,14 @@ namespace Wechat.Server.Wx.Handler
         }
         #endregion  
     /// <summary>
-    /// 必须实现
+    /// default
     /// </summary>
     /// <param name="requestMessage"></param>
     /// <returns></returns>
         public override IResponseMessageBase DefaultResponseMessage(IRequestMessageBase requestMessage)
         {
             var responseMessage = CreateResponseMessage<ResponseMessageText>();
-            responseMessage.Content = "未识别消息";
+            responseMessage.Content = "默认消息，有问题找庄重";
             return responseMessage;
         }
     }
